@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+app:cardElevation="7dp"
+app:cardCornerRadius="15dp"
+android:id="@+id/daddy"
+android:layout_margin="10dp" >
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_profile_img"
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/man" />
+
+    <TextView
+        android:id="@+id/_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/user_profile_img"
+        android:fontFamily="@font/amaranth"
+        android:text="USERNAME"
+        android:textSize="20dp" />
+
+    <ImageView
+        android:id="@+id/user_online_status"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/ic_green_circle_svgrepo_com"
+        android:visibility="invisible" />
+    <TextView
+        android:id="@+id/_user_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/_user_name"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/user_profile_img"
+        android:ellipsize="end"
+        android:fontFamily="@font/amaranth"
+        android:maxLines="1"
+        android:text="STATUS"
+        android:textSize="15dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_toEndOf="@id/user_profile_img"
+        android:layout_below="@id/_user_status"
+        >
+
+        <Button
+            android:id="@+id/req_acc_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Accept"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/req_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Cancel"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/_chat"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_gravity="end"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/message"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+</RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

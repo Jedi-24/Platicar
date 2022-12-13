@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.MaterialToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ADADC9"
+    android:id="@+id/custom_chat_toolbar"
+    android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/back_btn"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/custom_chat_user_img"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:src="@drawable/man"
+            android:layout_gravity="center"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/custom_chat_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textSize="20dp"
+                android:fontFamily="@font/amaranth"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                />
+
+            <TextView
+                android:id="@+id/custom_chat_last_seen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:text="Last Seen"
+                android:fontFamily="@font/amaranth"
+                android:layout_marginBottom="10dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.appbar.MaterialToolbar>

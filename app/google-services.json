@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "334312397212",
+    "project_id": "platicar-4ad1d",
+    "storage_bucket": "platicar-4ad1d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334312397212:android:acbc8c95d93d3acf179059",
+        "android_client_info": {
+          "package_name": "com.jedi.platicar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334312397212-g0s3jecd087guusjlqtrpuo6r3qknie2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jedi.platicar",
+            "certificate_hash": "ab2757329f60aa9c1db5520d576785a1e00f83de"
+          }
+        },
+        {
+          "client_id": "334312397212-f2i07j1v7fvpkl1ive8usjlaem6392p7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo1q9Ka-rg-eoOTvnERq3DeCoD1bjgmp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334312397212-f2i07j1v7fvpkl1ive8usjlaem6392p7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

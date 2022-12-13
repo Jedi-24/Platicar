@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+app:cardElevation="7dp"
+app:cardCornerRadius="15dp"
+android:id="@+id/friend_card"
+android:layout_margin="10dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/friend_img"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/man" />
+
+        <TextView
+            android:id="@+id/friend_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/friend_img"
+            android:fontFamily="@font/amaranth"
+            android:text="USERNAME"
+            android:textSize="20dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/friend_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/friend_username"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/friend_img"
+            android:ellipsize="end"
+            android:fontFamily="@font/amaranth"
+            android:maxLines="1"
+            android:text="STATUS"
+            android:textSize="15dp" />
+
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

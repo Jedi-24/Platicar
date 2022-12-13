@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatActivity">
+    <include
+        android:id="@+id/_custom_chat_toolbar"
+        layout="@layout/custom_chat_toolbar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/add_txt_field_"
+        android:layout_below="@+id/_custom_chat_toolbar"
+        android:background="#C8C8DD" />
+
+    <RelativeLayout
+        android:id="@+id/add_txt_field_"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#D6D6E6"
+        >
+
+        <EditText
+            android:id="@+id/input_txt_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Write Your Text Here..."
+            android:padding="17dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black" />
+
+        <ImageButton
+            android:id="@+id/_send_"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_name" />
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

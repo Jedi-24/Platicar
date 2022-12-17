@@ -17,12 +17,11 @@ import com.jedi.platicar.R;
 
 public class GroupsFragment extends Fragment {
 
-    View grpFragmentView;
-    private RecyclerView groupRV;
-    private FloatingActionButton floatingActionButton;
+    View mView;
+    private RecyclerView mGroupRV;
+    private FloatingActionButton mFloatingActionButton;
 
-    DatabaseReference grpRef;
-
+    DatabaseReference mGrpRef;
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -32,20 +31,20 @@ public class GroupsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        grpFragmentView = inflater.inflate(R.layout.fragment_groups, container, false);
+        mView = inflater.inflate(R.layout.fragment_groups, container, false);
         initializeViews();
 
-        floatingActionButton.setOnClickListener(v -> {
-            // todo: creating new grps;
+        mFloatingActionButton.setOnClickListener(v -> {
+            // todo: creating new groups;
             startActivity(new Intent(requireContext(), NewGroupActivity.class));
         });
 
-        return grpFragmentView;
+        return mView;
     }
 
     void initializeViews() {
-        grpRef = FirebaseDatabase.getInstance().getReference().child("Groups");
-        groupRV = grpFragmentView.findViewById(R.id.grp_rv);
-        floatingActionButton = grpFragmentView.findViewById(R.id.floating_action_button);
+        mGrpRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+        mGroupRV = mView.findViewById(R.id.grp_rv);
+        mFloatingActionButton = mView.findViewById(R.id.floating_action_button);
     }
 }

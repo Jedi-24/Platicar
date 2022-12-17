@@ -1,6 +1,7 @@
 package com.jedi.platicar.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.jedi.platicar.Models.UserModel;
 import com.jedi.platicar.R;
 import com.squareup.picasso.Picasso;
 
 public class RequestFragment extends Fragment {
 
-    View reqFragView;
-    RecyclerView reqRV;
-    DatabaseReference chatReqRef, userRef, contactRef;
-    FirebaseAuth mAuth;
-    String currUserID;
+    private static final String TAG = "RequestFragment";
+
+    private RecyclerView mReqRV;
+
+    private DatabaseReference mChatReqRef, mUserRef, mContactRef;
+    private FirebaseUser mUser;
 
     public RequestFragment() {
     }
@@ -41,25 +42,35 @@ public class RequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        reqFragView = inflater.inflate(R.layout.fragment_request, container, false);
-        mAuth = FirebaseAuth.getInstance();
-        currUserID = mAuth.getCurrentUser().getUid();
-        chatReqRef = FirebaseDatabase.getInstance().getReference().child("ChatRequests");
-        userRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        contactRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+        View view = inflater.inflate(R.layout.fragment_request, container, false);
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mUser == null) {
+            // TODO: handle null user
+            return view;
+        }
+        mChatReqRef = FirebaseDatabase.getInstance().getReference().child("ChatRequests");
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mContactRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
 
-        reqRV = reqFragView.findViewById(R.id.chat_request_rv);
-        reqRV.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mReqRV = view.findViewById(R.id.chat_request_rv);
+        mReqRV.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        return reqFragView;
+        return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mUser == null) {
+            // TODO: handle null user
+            Log.d(TAG, "onStart: User NULL");
+            return;
+        }
+
         FirebaseRecyclerOptions<UserModel> options = new FirebaseRecyclerOptions.Builder<UserModel>()
-                .setQuery(chatReqRef.child(currUserID), UserModel.class)
+                .setQuery(mChatReqRef.child(mUser.getUid()), UserModel.class)
                 .build();
 
         FirebaseRecyclerAdapter<UserModel, RequestsViewHolder> adapter = new FirebaseRecyclerAdapter<UserModel, RequestsViewHolder>(options) {
@@ -69,79 +80,85 @@ public class RequestFragment extends Fragment {
                 holder.decBtn.setVisibility(View.VISIBLE);
 
                 String reqUserID = getRef(position).getKey();
-                DatabaseReference reqTypeRef = getRef(position).child("request_type").getRef();
+                if (reqUserID == null) {
+                    Log.d(TAG, "onBindViewHolder: key NULL at position: " + position);
+                    return;
+                }
+                getRef(position).child("request_type").getRef().get().addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG, "onBindViewHolder: Pos: " + position + " - Fetching dataSnapshot failed");
+                        return;
+                    }
+                    DataSnapshot snapshot = task.getResult();
+                    if (!snapshot.exists()) {
+                        Log.d(TAG, "onBindViewHolder: Snapshot doesn't exist: " + reqUserID);
+                        return;
+                    }
 
-                reqTypeRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            String type = snapshot.getValue().toString();
+                    Object objType = snapshot.getValue();
+                    if (objType == null) {
+                        Log.d(TAG, "onBindViewHolder: Snapshot Type error");
+                        return;
+                    }
+                    String type = snapshot.getValue().toString();
 
-                            if (type.equals("Received")) {
-                                userRef.child(reqUserID).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.hasChild("ImageUrl")) {
-                                            String profileImgUrl = snapshot.child("ImageUrl").getValue().toString();
-                                            Picasso.get().load(profileImgUrl).placeholder(R.drawable.man).into(holder.userProfile);
-                                        }
-                                        String name = snapshot.child("Name").getValue().toString();
-                                        String status = snapshot.child("Status").getValue().toString();
+                    if (!type.equals("Received")) {
+                        // TODO: naam bhi bada ajeeb rakha hai tumne
+                        holder.daddy.setVisibility(View.GONE); // todo: ajeeb trika to remove sent requests;
+                        holder.userName.setVisibility(View.GONE);
+                        holder.userStatus.setVisibility(View.GONE);
+                        holder.userProfile.setVisibility(View.GONE);
+                        holder.accBtn.setVisibility(View.GONE);
+                        holder.decBtn.setVisibility(View.GONE);
+                        return;
+                    }
 
-                                        holder.userName.setText(name);
-                                        holder.userStatus.setText(status);
+                    mUserRef.child(reqUserID).get().addOnCompleteListener(userRefTask -> {
+                        if (!userRefTask.isSuccessful()) {
+                            Log.d(TAG, "onBindViewHolder: [userRefTask] Pos: " + position + " - Fetching dataSnapshot failed");
+                            return;
+                        }
+                        DataSnapshot userRefSnapshot = userRefTask.getResult();
 
-                                        holder.accBtn.setOnClickListener(v -> { // remove from requestList and add user to friends list;
-                                            contactRef.child(currUserID).child(reqUserID)
-                                                    .child("Contact").setValue("Saved")
-                                                    .addOnCompleteListener(task -> {
-                                                        if (task.isSuccessful()) {
-                                                            contactRef.child(reqUserID).child(currUserID)
-                                                                    .child("Contact").setValue("Saved")
-                                                                    .addOnCompleteListener(task1 -> {
-                                                                        if (task1.isSuccessful()) {
-                                                                            chatReqRef.child(currUserID).child(reqUserID)
-                                                                                    .removeValue()
-                                                                                    .addOnCompleteListener(task2 -> {
-                                                                                        if (task2.isSuccessful()) {
-                                                                                            chatReqRef.child(reqUserID).child(currUserID)
-                                                                                                    .removeValue();
-                                                                                        }
-                                                                                    });
-                                                                        }
-                                                                    });
-                                                        }
-                                                    });
-                                        });
-
-                                        holder.decBtn.setOnClickListener(v -> chatReqRef.child(currUserID).child(reqUserID)
-                                                .removeValue()
-                                                .addOnCompleteListener(task2 -> {
-                                                    if (task2.isSuccessful()) {
-                                                        chatReqRef.child(reqUserID).child(currUserID)
-                                                                .removeValue();
-                                                    }
-                                                }));
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                    }
-                                });
-                            } else {
-                                holder.daddy.setVisibility(View.GONE); // todo: ajeeb trika to remove sent requests;
-                                holder.userName.setVisibility(View.GONE);
-                                holder.userStatus.setVisibility(View.GONE);
-                                holder.userProfile.setVisibility(View.GONE);
-                                holder.accBtn.setVisibility(View.GONE);
-                                holder.decBtn.setVisibility(View.GONE);
+                        if (userRefSnapshot.hasChild("ImageUrl")) {
+                            Object objProfileImgUrl = userRefSnapshot.child("ImageUrl").getValue();
+                            if (objProfileImgUrl != null) {
+                                String profileImgUrl = objProfileImgUrl.toString();
+                                Picasso.get().load(profileImgUrl).placeholder(R.drawable.man).into(holder.userProfile);
                             }
                         }
-                    }
+                        Object objName = userRefSnapshot.child("Name").getValue(),
+                                objStatus = userRefSnapshot.child("Status").getValue();
+                        holder.userName.setText(objName == null ? ":??" : objName.toString());
+                        holder.userStatus.setText(objStatus == null ? ":??" : objStatus.toString());
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
+                        // remove from requestList and add user to friends list;
+                        holder.accBtn.setOnClickListener(v -> {
+                            mContactRef.child(mUser.getUid()).child(reqUserID)
+                                    .child("Contact").setValue("Saved")
+                                    .addOnCompleteListener(save_XY_Task -> {
+                                        if (!save_XY_Task.isSuccessful()) {
+                                            Log.d(TAG, "onBindViewHolder: [save_XY_Task] failed");
+                                            return;
+                                        }
+                                        mContactRef.child(reqUserID).child(mUser.getUid())
+                                                .child("Contact").setValue("Saved")
+                                                .addOnCompleteListener(save_YX_Task -> {
+                                                    if (!save_YX_Task.isSuccessful()) {
+                                                        Log.d(TAG, "onBindViewHolder: [save_YX_Task] failed");
+                                                        return;
+                                                    }
+                                                    mChatReqRef.child(mUser.getUid()).child(reqUserID).removeValue();
+                                                    mChatReqRef.child(reqUserID).child(mUser.getUid()).removeValue();
+                                                });
+                                    });
+                        });
+
+                        holder.decBtn.setOnClickListener(v -> {
+                            mChatReqRef.child(mUser.getUid()).child(reqUserID).removeValue();
+                            mChatReqRef.child(reqUserID).child(mUser.getUid()).removeValue();
+                        });
+                    });
                 });
             }
 
@@ -149,13 +166,11 @@ public class RequestFragment extends Fragment {
             @Override
             public RequestsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout, parent, false);
-
-                RequestsViewHolder requestsViewHolder = new RequestsViewHolder(view);
-                return requestsViewHolder;
+                return new RequestsViewHolder(view);
             }
         };
 
-        reqRV.setAdapter(adapter);
+        mReqRV.setAdapter(adapter);
         adapter.startListening();
     }
 
@@ -176,5 +191,4 @@ public class RequestFragment extends Fragment {
             decBtn = itemView.findViewById(R.id.req_cancel_btn);
         }
     }
-
 }

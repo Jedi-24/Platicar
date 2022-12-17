@@ -1,6 +1,6 @@
 package com.jedi.platicar.Models;
 
-public class TextModal{
+public class TextModal {
     String type, from, message;
 
     public TextModal() {

@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
@@ -14,19 +13,10 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.installations.FirebaseInstallations;
-import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jedi.platicar.MainActivity;
 
@@ -62,7 +52,7 @@ public class Auth {
                                 if (task.isSuccessful()) {
                                     String currUserId = mAuth.getCurrentUser().getUid();
                                     FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task12 -> {
-                                        Log.d(TAG, "performAuthentication: "+ task12.getResult());
+                                        Log.d(TAG, "performAuthentication: " + task12.getResult());
                                         FirebaseDatabase.getInstance().getReference().child("tokens")
                                                 .child(currUserId).setValue(task12.getResult())
                                                 .addOnCompleteListener(task1 -> {

@@ -1,7 +1,6 @@
 package com.jedi.platicar;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     String receiverUserId, currentUserId, currentState;
 
-    private interface getDevToken{
+    private interface getDevToken {
         void onRet(String device_token);
     }
 
@@ -231,7 +230,7 @@ public class ProfileActivity extends AppCompatActivity {
                 });
     }
 
-    private void getReceiverToken(){
+    private void getReceiverToken() {
         tokenRef.child(receiverUserId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -260,11 +259,11 @@ public class ProfileActivity extends AppCompatActivity {
                                     currentState = "request_sent";
                                     mBtn.setText("Cancel chat request");
 
-                                    HashMap<String,String> newChatReq = new HashMap<>();
+                                    HashMap<String, String> newChatReq = new HashMap<>();
                                     newChatReq.put("message", "CHECK IT OUT");
                                     newChatReq.put("from", "NEW CHAT REQUEST");
 
-                                    NotificationDispatcher.dispatchNotification(getApplicationContext(),device_token, newChatReq);
+                                    NotificationDispatcher.dispatchNotification(getApplicationContext(), device_token, newChatReq);
                                 });
                     }
                 });

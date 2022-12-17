@@ -1,16 +1,15 @@
 package com.jedi.platicar;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
@@ -72,16 +71,16 @@ public class MainActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.drop_dowm_options);
 
         VPadapter vpAdapter = new VPadapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        vpAdapter.addFragment(chatfragment,"CHATS");
-        vpAdapter.addFragment(groupsfragment,"GROUPS");
-        vpAdapter.addFragment(friendsfragment,"FRIENDS");
-        vpAdapter.addFragment(requestfragment,"REQUESTS");
+        vpAdapter.addFragment(chatfragment, "CHATS");
+        vpAdapter.addFragment(groupsfragment, "GROUPS");
+        vpAdapter.addFragment(friendsfragment, "FRIENDS");
+        vpAdapter.addFragment(requestfragment, "REQUESTS");
         viewPager.setAdapter(vpAdapter);
 
         toolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id._find_friends:
-                    startActivity(new Intent(MainActivity.this,FindFriendsActivity.class));
+                    startActivity(new Intent(MainActivity.this, FindFriendsActivity.class));
                     return true;
                 case R.id._settings:
                     startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -97,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void clearToken(String currUid){
+    private void clearToken(String currUid) {
         reference.child("tokens")
                 .child(currUid).removeValue();
     }
 
-    private void requestNewGrp(){
+    private void requestNewGrp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("New Group");
         EditText grpName = new EditText(MainActivity.this);
@@ -111,10 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setPositiveButton("Create", (dialog, which) -> {
             String newGrpName = grpName.getText().toString();
-            if(newGrpName.matches("")){
+            if (newGrpName.matches("")) {
                 Toast.makeText(MainActivity.this, "Add a Name", Toast.LENGTH_SHORT).show();
-            }
-            else{
+            } else {
                 createNewGrp(newGrpName);
             }
         });
@@ -123,24 +121,25 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void createNewGrp(String newGrpName){
+    private void createNewGrp(String newGrpName) {
         reference.child("Groups")
                 .child(newGrpName).setValue("")
                 .addOnCompleteListener(task -> {
                 });
     }
 
-    private void verifyUser(){
+    private void verifyUser() {
         String currUserId = mAuth.getCurrentUser().getUid();
 
         reference.child("Users").child(currUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!(snapshot.child("Name").exists())){
+                if (!(snapshot.child("Name").exists())) {
                     startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                     finish();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -151,11 +150,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
-        }
-        else{
+        } else {
             updateUserStatus("online");
             verifyUser();
         }
@@ -165,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             updateUserStatus("offline");
         }
     }
@@ -175,13 +173,13 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         currentUser = mAuth.getCurrentUser();
         currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             updateUserStatus("offline");
         }
     }
 
-    void updateUserStatus(String onlineState){
-        String  saveCurrDate, saveCurrTime;
+    void updateUserStatus(String onlineState) {
+        String saveCurrDate, saveCurrTime;
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM dd, yyyy");
@@ -191,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
         saveCurrTime = timeFormat.format(calendar.getTime());
 
         HashMap<String, Object> onlineStatus = new HashMap<>();
-        onlineStatus.put("date" , saveCurrDate);
-        onlineStatus.put("time" , saveCurrTime);
+        onlineStatus.put("date", saveCurrDate);
+        onlineStatus.put("time", saveCurrTime);
         onlineStatus.put("state", onlineState);
 
         reference.child("Users").child(currentUser.getUid())

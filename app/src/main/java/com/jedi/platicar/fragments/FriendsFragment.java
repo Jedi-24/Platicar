@@ -2,17 +2,16 @@ package com.jedi.platicar.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -22,10 +21,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jedi.platicar.ChatActivity;
+import com.jedi.platicar.Models.UserModel;
 import com.jedi.platicar.ProfileActivity;
 import com.jedi.platicar.R;
-import com.jedi.platicar.Models.UserModel;
-import com.jedi.platicar.ChatActivity;
 import com.squareup.picasso.Picasso;
 
 public class FriendsFragment extends Fragment {
@@ -60,7 +59,7 @@ public class FriendsFragment extends Fragment {
 
         FirebaseRecyclerOptions<UserModel> options =
                 new FirebaseRecyclerOptions.Builder<UserModel>()
-                        .setQuery(contactRef,UserModel.class)
+                        .setQuery(contactRef, UserModel.class)
                         .build();
 
         FirebaseRecyclerAdapter<UserModel, FriendsViewHolder> recyclerAdapter =
@@ -75,7 +74,7 @@ public class FriendsFragment extends Fragment {
                         userRef.child(friendUID).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.hasChild("ImageUrl")){
+                                if (snapshot.hasChild("ImageUrl")) {
                                     profileImgUrl[0] = snapshot.child("ImageUrl").getValue().toString();
                                     Picasso.get().load(profileImgUrl[0]).placeholder(R.drawable.man).into(holder.userProfile);
                                 }
@@ -88,7 +87,7 @@ public class FriendsFragment extends Fragment {
                                 holder.startChat.setOnClickListener(v -> {
                                     Intent chatIntent = new Intent(requireContext(), ChatActivity.class);
                                     chatIntent.putExtra("userID", friendUID);
-                                    chatIntent.putExtra("userName",friendName);
+                                    chatIntent.putExtra("userName", friendName);
                                     chatIntent.putExtra("userImgUrl", profileImgUrl[0]); // TODO: 12/1/2022 bug fix later.
                                     startActivity(chatIntent);
                                 });
@@ -112,10 +111,10 @@ public class FriendsFragment extends Fragment {
                     @NonNull
                     @Override
                     public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout,parent,false);
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout, parent, false);
 
                         FriendsViewHolder friendsViewHolder = new FriendsViewHolder(view);
-                        return  friendsViewHolder;
+                        return friendsViewHolder;
                     }
                 };
         friendsRV.setAdapter(recyclerAdapter);
@@ -123,9 +122,10 @@ public class FriendsFragment extends Fragment {
     }
 
     // inner VH class;
-    public static class FriendsViewHolder extends RecyclerView.ViewHolder{
+    public static class FriendsViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userStatus;
         ImageView userProfile, startChat;
+
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
 

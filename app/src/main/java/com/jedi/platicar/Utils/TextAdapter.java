@@ -19,14 +19,14 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.TextViewHolder
     private ArrayList<TextModal> texts;
     private FirebaseAuth mAuth;
 
-    public TextAdapter(ArrayList<TextModal> texts){
+    public TextAdapter(ArrayList<TextModal> texts) {
         this.texts = texts;
     }
 
     @NonNull
     @Override
     public TextViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_texts_layout,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_texts_layout, parent, false);
         TextViewHolder holder = new TextViewHolder(view);
 
         mAuth = FirebaseAuth.getInstance();
@@ -42,13 +42,12 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.TextViewHolder
         String fromUid = text.getFrom();
         String fromTextType = text.getType();
 
-        if(fromTextType.equals("text")){
-            if(fromUid.equals(currUserId)){ // current user is the sender;
+        if (fromTextType.equals("text")) {
+            if (fromUid.equals(currUserId)) { // current user is the sender;
                 holder.receiverTexts.setVisibility(View.INVISIBLE);
                 holder.senderTexts.setVisibility(View.VISIBLE);
                 holder.senderTexts.setText(text.getMessage());
-            }
-            else{
+            } else {
                 holder.senderTexts.setVisibility(View.INVISIBLE);
                 holder.receiverTexts.setVisibility(View.VISIBLE);
                 holder.receiverTexts.setText(text.getMessage());
@@ -62,9 +61,10 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.TextViewHolder
         return texts.size();
     }
 
-    public class TextViewHolder extends RecyclerView.ViewHolder{
+    public class TextViewHolder extends RecyclerView.ViewHolder {
 
         TextView receiverTexts, senderTexts;
+
         public TextViewHolder(@NonNull View itemView) {
             super(itemView);
 

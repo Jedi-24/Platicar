@@ -1,10 +1,5 @@
 package com.jedi.platicar;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -53,43 +53,44 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         FirebaseRecyclerOptions<UserModel> options =
                 new FirebaseRecyclerOptions.Builder<UserModel>()
-                        .setQuery(userRef,UserModel.class)
+                        .setQuery(userRef, UserModel.class)
                         .build();
 
-        FirebaseRecyclerAdapter<UserModel,FindFriendsViewHolder> rvAdapter =
+        FirebaseRecyclerAdapter<UserModel, FindFriendsViewHolder> rvAdapter =
                 new FirebaseRecyclerAdapter<UserModel, FindFriendsViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull FindFriendsViewHolder holder, int position, @NonNull UserModel model) {
-                holder.userName.setText(model.getName());
-                holder.userStatus.setText(model.getStatus());
-                Picasso.get().load(model.getImageUrl()).placeholder(R.drawable.man).into(holder.userProfile);
+                    @Override
+                    protected void onBindViewHolder(@NonNull FindFriendsViewHolder holder, int position, @NonNull UserModel model) {
+                        holder.userName.setText(model.getName());
+                        holder.userStatus.setText(model.getStatus());
+                        Picasso.get().load(model.getImageUrl()).placeholder(R.drawable.man).into(holder.userProfile);
 
-                holder.itemView.setOnClickListener(v -> {
-                    String visit_user_id = getRef(holder.getBindingAdapterPosition()).getKey();
+                        holder.itemView.setOnClickListener(v -> {
+                            String visit_user_id = getRef(holder.getBindingAdapterPosition()).getKey();
 
-                    Intent viewProfileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
-                    viewProfileIntent.putExtra("visit_user_id", visit_user_id);
-                    startActivity(viewProfileIntent);
-                });
-            }
+                            Intent viewProfileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
+                            viewProfileIntent.putExtra("visit_user_id", visit_user_id);
+                            startActivity(viewProfileIntent);
+                        });
+                    }
 
-            @NonNull
-            @Override
-            public FindFriendsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout,parent,false);
+                    @NonNull
+                    @Override
+                    public FindFriendsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout, parent, false);
 
-                FindFriendsViewHolder viewHolder = new FindFriendsViewHolder(view);
-                return  viewHolder;
-            }
-        };
+                        FindFriendsViewHolder viewHolder = new FindFriendsViewHolder(view);
+                        return viewHolder;
+                    }
+                };
         mRecyclerView.setAdapter(rvAdapter);
         rvAdapter.startListening();
     }
 
     // inner VH class;
-    public static class FindFriendsViewHolder extends RecyclerView.ViewHolder{
+    public static class FindFriendsViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userStatus;
         ImageView userProfile;
+
         public FindFriendsViewHolder(@NonNull View itemView) {
             super(itemView);
 

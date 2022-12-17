@@ -2,17 +2,16 @@ package com.jedi.platicar.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -22,9 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jedi.platicar.R;
-import com.jedi.platicar.Models.UserModel;
 import com.jedi.platicar.ChatActivity;
+import com.jedi.platicar.Models.UserModel;
+import com.jedi.platicar.R;
 import com.squareup.picasso.Picasso;
 
 public class ChatFragment extends Fragment {
@@ -60,7 +59,7 @@ public class ChatFragment extends Fragment {
 
         FirebaseRecyclerOptions<UserModel> options =
                 new FirebaseRecyclerOptions.Builder<UserModel>()
-                        .setQuery(chatRef,UserModel.class)
+                        .setQuery(chatRef, UserModel.class)
                         .build();
 
         FirebaseRecyclerAdapter<UserModel, ChatsViewHolder> recyclerAdapter = new FirebaseRecyclerAdapter<UserModel, ChatsViewHolder>(options) {
@@ -72,7 +71,7 @@ public class ChatFragment extends Fragment {
                 userRef.child(friendUID).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.hasChild("ImageUrl")){
+                        if (snapshot.hasChild("ImageUrl")) {
                             profileImgUrl[0] = snapshot.child("ImageUrl").getValue().toString();
                             Picasso.get().load(profileImgUrl[0]).placeholder(R.drawable.man).into(holder.userProfile);
                         }
@@ -83,25 +82,26 @@ public class ChatFragment extends Fragment {
                         holder.userName.setText(friendName);
                         holder.userStatus.setText(friendStatus);
 
-                        if(snapshot.child("userStatus").hasChild("state")){
+                        if (snapshot.child("userStatus").hasChild("state")) {
                             String onlineStatus = (String) snapshot.child("userStatus").child("state").getValue();
-                            if(onlineStatus.matches("online")){
+                            if (onlineStatus.matches("online")) {
                                 holder.userOnlineStatus.setVisibility(View.VISIBLE);
-                            } else{
+                            } else {
                                 holder.userOnlineStatus.setVisibility(View.INVISIBLE);
                             }
-                        } else{
+                        } else {
                             holder.userOnlineStatus.setVisibility(View.INVISIBLE);
                         }
 
                         holder.itemView.setOnClickListener(v -> {
                             Intent chatIntent = new Intent(requireContext(), ChatActivity.class);
                             chatIntent.putExtra("userID", friendUID);
-                            chatIntent.putExtra("userName",friendName);
+                            chatIntent.putExtra("userName", friendName);
                             chatIntent.putExtra("userImgUrl", profileImgUrl[0]); // TODO: 12/1/2022 bug fix laterrr.
                             startActivity(chatIntent);
                         });
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
@@ -111,7 +111,7 @@ public class ChatFragment extends Fragment {
             @NonNull
             @Override
             public ChatsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout,parent,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout, parent, false);
                 ChatsViewHolder chatsViewHolder = new ChatsViewHolder(view);
 
                 return chatsViewHolder;
@@ -122,9 +122,10 @@ public class ChatFragment extends Fragment {
     }
 
     // inner VH class;
-    public static class ChatsViewHolder extends RecyclerView.ViewHolder{
+    public static class ChatsViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userStatus;
         ImageView userProfile, userOnlineStatus;
+
         public ChatsViewHolder(@NonNull View itemView) {
             super(itemView);
 

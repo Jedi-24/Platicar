@@ -1,9 +1,5 @@
 package com.jedi.platicar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +7,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +42,7 @@ public class GroupActivity extends AppCompatActivity {
     private String userID;
     private String currentDate;
     private String currentTime;
-    private DatabaseReference grpTextKeyRef,userRef, grpNameRef;
+    private DatabaseReference grpTextKeyRef, userRef, grpNameRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class GroupActivity extends AppCompatActivity {
         grpNameRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     displayTexts(snapshot);
                 }
             }
@@ -99,27 +99,27 @@ public class GroupActivity extends AppCompatActivity {
         });
     }
 
-    private void displayTexts(DataSnapshot snapshot){
+    private void displayTexts(DataSnapshot snapshot) {
 
         Iterator iterator = snapshot.getChildren().iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
 //            Log.d(TAG, "displayTexts: hereeee");
-            String date = (String) ((DataSnapshot)iterator.next()).getValue();
-            String chatTime = (String) ((DataSnapshot)iterator.next()).getValue();
-            String chatMessage = (String) ((DataSnapshot)iterator.next()).getValue();
-            String chatName = (String) ((DataSnapshot)iterator.next()).getValue();
+            String date = (String) ((DataSnapshot) iterator.next()).getValue();
+            String chatTime = (String) ((DataSnapshot) iterator.next()).getValue();
+            String chatMessage = (String) ((DataSnapshot) iterator.next()).getValue();
+            String chatName = (String) ((DataSnapshot) iterator.next()).getValue();
 
             displayTxt.append(chatName + " :\n" + chatMessage + "\n" + chatTime + "\n" + date + "\n\n");
             mScroll.fullScroll(ScrollView.FOCUS_DOWN);
         }
     }
 
-    private void getUserInfo(){
+    private void getUserInfo() {
         userRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     userName = snapshot.child("Name").getValue().toString();
                 }
             }
@@ -131,7 +131,7 @@ public class GroupActivity extends AppCompatActivity {
         });
     }
 
-    private void init(){
+    private void init() {
         toolbar = findViewById(R.id.tool_bar);
         mScroll = findViewById(R.id.scroller_);
         sendImgbtn = findViewById(R.id._send);
@@ -144,14 +144,13 @@ public class GroupActivity extends AppCompatActivity {
         grpNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(grpName);
     }
 
-    private void saveTxtToFirebase(){
+    private void saveTxtToFirebase() {
         String txt = inputField.getText().toString();
         String messageKey = grpNameRef.push().getKey();
 
-        if(txt.matches("")){
+        if (txt.matches("")) {
             Log.d(TAG, "saveTxtToFirebase: ");
-        }
-        else{
+        } else {
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat currDateFormat = new SimpleDateFormat("MM, dd, yyyy");
             SimpleDateFormat currTimeFormat = new SimpleDateFormat("hh:mm a");
@@ -159,12 +158,12 @@ public class GroupActivity extends AppCompatActivity {
             currentDate = currDateFormat.format(calendar.getTime());
             currentTime = currTimeFormat.format(calendar.getTime());
 
-            HashMap<String,Object> Texts = new HashMap<>();
+            HashMap<String, Object> Texts = new HashMap<>();
             grpNameRef.updateChildren(Texts);
 
             grpTextKeyRef = grpNameRef.child(messageKey);
 
-            HashMap<String,Object> messageInfo = new HashMap<>();
+            HashMap<String, Object> messageInfo = new HashMap<>();
             messageInfo.put("name", userName);
             messageInfo.put("message", txt);
             messageInfo.put("Date", currentDate);

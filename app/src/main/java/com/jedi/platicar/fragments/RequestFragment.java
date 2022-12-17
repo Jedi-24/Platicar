@@ -1,12 +1,6 @@
 package com.jedi.platicar.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +8,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -23,15 +22,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jedi.platicar.R;
 import com.jedi.platicar.Models.UserModel;
+import com.jedi.platicar.R;
 import com.squareup.picasso.Picasso;
 
 public class RequestFragment extends Fragment {
 
     View reqFragView;
     RecyclerView reqRV;
-    DatabaseReference chatReqRef, userRef,contactRef;
+    DatabaseReference chatReqRef, userRef, contactRef;
     FirebaseAuth mAuth;
     String currUserID;
 
@@ -42,7 +41,7 @@ public class RequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        reqFragView =  inflater.inflate(R.layout.fragment_request, container, false);
+        reqFragView = inflater.inflate(R.layout.fragment_request, container, false);
         mAuth = FirebaseAuth.getInstance();
         currUserID = mAuth.getCurrentUser().getUid();
         chatReqRef = FirebaseDatabase.getInstance().getReference().child("ChatRequests");
@@ -60,7 +59,7 @@ public class RequestFragment extends Fragment {
         super.onStart();
 
         FirebaseRecyclerOptions<UserModel> options = new FirebaseRecyclerOptions.Builder<UserModel>()
-                .setQuery(chatReqRef.child(currUserID),UserModel.class)
+                .setQuery(chatReqRef.child(currUserID), UserModel.class)
                 .build();
 
         FirebaseRecyclerAdapter<UserModel, RequestsViewHolder> adapter = new FirebaseRecyclerAdapter<UserModel, RequestsViewHolder>(options) {
@@ -75,14 +74,14 @@ public class RequestFragment extends Fragment {
                 reqTypeRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
+                        if (snapshot.exists()) {
                             String type = snapshot.getValue().toString();
 
-                            if(type.equals("Received")){
+                            if (type.equals("Received")) {
                                 userRef.child(reqUserID).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.hasChild("ImageUrl")){
+                                        if (snapshot.hasChild("ImageUrl")) {
                                             String profileImgUrl = snapshot.child("ImageUrl").getValue().toString();
                                             Picasso.get().load(profileImgUrl).placeholder(R.drawable.man).into(holder.userProfile);
                                         }
@@ -96,15 +95,15 @@ public class RequestFragment extends Fragment {
                                             contactRef.child(currUserID).child(reqUserID)
                                                     .child("Contact").setValue("Saved")
                                                     .addOnCompleteListener(task -> {
-                                                        if(task.isSuccessful()){
+                                                        if (task.isSuccessful()) {
                                                             contactRef.child(reqUserID).child(currUserID)
                                                                     .child("Contact").setValue("Saved")
                                                                     .addOnCompleteListener(task1 -> {
-                                                                        if(task1.isSuccessful()){
+                                                                        if (task1.isSuccessful()) {
                                                                             chatReqRef.child(currUserID).child(reqUserID)
                                                                                     .removeValue()
                                                                                     .addOnCompleteListener(task2 -> {
-                                                                                        if(task2.isSuccessful()){
+                                                                                        if (task2.isSuccessful()) {
                                                                                             chatReqRef.child(reqUserID).child(currUserID)
                                                                                                     .removeValue();
                                                                                         }
@@ -118,18 +117,18 @@ public class RequestFragment extends Fragment {
                                         holder.decBtn.setOnClickListener(v -> chatReqRef.child(currUserID).child(reqUserID)
                                                 .removeValue()
                                                 .addOnCompleteListener(task2 -> {
-                                                    if(task2.isSuccessful()){
+                                                    if (task2.isSuccessful()) {
                                                         chatReqRef.child(reqUserID).child(currUserID)
                                                                 .removeValue();
                                                     }
                                                 }));
                                     }
+
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
                                     }
                                 });
-                            }
-                            else{
+                            } else {
                                 holder.daddy.setVisibility(View.GONE); // todo: ajeeb trika to remove sent requests;
                                 holder.userName.setVisibility(View.GONE);
                                 holder.userStatus.setVisibility(View.GONE);
@@ -139,6 +138,7 @@ public class RequestFragment extends Fragment {
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
@@ -148,7 +148,7 @@ public class RequestFragment extends Fragment {
             @NonNull
             @Override
             public RequestsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout,parent,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_layout, parent, false);
 
                 RequestsViewHolder requestsViewHolder = new RequestsViewHolder(view);
                 return requestsViewHolder;
@@ -160,7 +160,7 @@ public class RequestFragment extends Fragment {
     }
 
     // inner VH class;
-    public static class RequestsViewHolder extends RecyclerView.ViewHolder{
+    public static class RequestsViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout daddy;
         TextView userName, userStatus;
         ImageView userProfile;

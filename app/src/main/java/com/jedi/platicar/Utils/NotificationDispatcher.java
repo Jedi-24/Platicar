@@ -49,9 +49,9 @@ public class NotificationDispatcher {
             JSONObject notifObj = new JSONObject();
             notifObj.put("body", textBody.get("message"));
 
-            if(textBody.get("from").matches("NEW CHAT REQUEST"))
+            if (textBody.get("from").matches("NEW CHAT REQUEST"))
                 notifObj.put("title", textBody.get("from"));
-            else{
+            else {
                 notifObj.put("title", title);
             }
 
@@ -104,6 +104,7 @@ public class NotificationDispatcher {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         title = (String) snapshot.child("Name").getValue();
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }

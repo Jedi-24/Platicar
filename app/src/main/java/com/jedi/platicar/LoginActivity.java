@@ -1,19 +1,15 @@
 package com.jedi.platicar;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
+import android.os.Bundle;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.view.View;
-
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.button.MaterialButton;
 import com.jedi.platicar.Utils.Auth;
 
@@ -50,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         loginBtn.setOnClickListener(v -> {
-            Auth.oneTapGoogleSignIn(this,oneTapClient,signInRequest,resultLauncher);
+            Auth.oneTapGoogleSignIn(this, oneTapClient, signInRequest, resultLauncher);
         });
     }
 }

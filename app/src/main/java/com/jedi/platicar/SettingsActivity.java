@@ -1,16 +1,16 @@
 package com.jedi.platicar;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,16 +68,15 @@ public class SettingsActivity extends AppCompatActivity {
                         if (data == null) return;
 
                         Uri contentURI = data.getData();
-                        StorageReference filePath = userProfileImagesRef.child(userID+".jpg");
+                        StorageReference filePath = userProfileImagesRef.child(userID + ".jpg");
 
                         filePath.putFile(contentURI).addOnSuccessListener(taskSnapshot ->
                                 taskSnapshot.getStorage().getDownloadUrl()
                                         .addOnSuccessListener(uri -> rootRef.child("Users")
-                                .child(userID)
-                                .child("ImageUrl").setValue(uri.toString())
-                                .addOnCompleteListener(task -> loadingBar.dismiss())));
-                    }
-                    else{
+                                                .child(userID)
+                                                .child("ImageUrl").setValue(uri.toString())
+                                                .addOnCompleteListener(task -> loadingBar.dismiss())));
+                    } else {
                         loadingBar.dismiss();
                     }
                 });
@@ -87,27 +86,24 @@ public class SettingsActivity extends AppCompatActivity {
             String newStatus = mUserStatus.getText().toString();
 
 
-            if(newUserName.matches("")){
+            if (newUserName.matches("")) {
                 Toast.makeText(SettingsActivity.this, "Enter a Username...", Toast.LENGTH_SHORT).show();
-            }
-            else if(newStatus.matches("")){
+            } else if (newStatus.matches("")) {
                 Toast.makeText(SettingsActivity.this, "Enter a Status...", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 HashMap<String, Object> userInfo = new HashMap();
 
-                userInfo.put("Name",newUserName);
-                userInfo.put("Status",newStatus);
+                userInfo.put("Name", newUserName);
+                userInfo.put("Status", newStatus);
 
                 rootRef.child("Users").child(userID).updateChildren(userInfo)
                         .addOnCompleteListener(task -> {
-                            if(task.isSuccessful()){
-                                startActivity(new Intent(SettingsActivity.this,MainActivity.class));
+                            if (task.isSuccessful()) {
+                                startActivity(new Intent(SettingsActivity.this, MainActivity.class));
                                 Toast.makeText(SettingsActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
                                 finish();
-                            }
-                            else
-                                Toast.makeText(SettingsActivity.this, "Error "+ task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(SettingsActivity.this, "Error " + task.getException().toString(), Toast.LENGTH_SHORT).show();
                         });
             }
         });
@@ -122,12 +118,12 @@ public class SettingsActivity extends AppCompatActivity {
         mActivityAddNoteResultLauncher.launch(galleryIntent);
     }
 
-    private void retrieveUserInfo(){
+    private void retrieveUserInfo() {
         rootRef.child("Users").child(userID)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists() && snapshot.hasChild("Name") && snapshot.hasChild("Status") && snapshot.hasChild("ImageUrl")){
+                        if (snapshot.exists() && snapshot.hasChild("Name") && snapshot.hasChild("Status") && snapshot.hasChild("ImageUrl")) {
                             String userName = snapshot.child("Name").getValue().toString();
                             String userStatus = snapshot.child("Status").getValue().toString();
                             String userImage = snapshot.child("ImageUrl").getValue().toString();
@@ -135,15 +131,13 @@ public class SettingsActivity extends AppCompatActivity {
                             mUserName.setText(userName);
                             mUserStatus.setText(userStatus);
                             Picasso.get().load(userImage).into(profile_img);
-                        }
-                        else if(snapshot.exists() && snapshot.hasChild("Name") && snapshot.hasChild("Status")){
+                        } else if (snapshot.exists() && snapshot.hasChild("Name") && snapshot.hasChild("Status")) {
                             String userName = snapshot.child("Name").getValue().toString();
                             String userStatus = snapshot.child("Status").getValue().toString();
                             // todo:
                             mUserName.setText(userName);
                             mUserStatus.setText(userStatus);
-                        }
-                        else{
+                        } else {
                             Toast.makeText(SettingsActivity.this, "Complete Your Profile...", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -155,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
                 });
     }
 
-    private void init(){
+    private void init() {
         profile_img = findViewById(R.id.profile_image);
         mUserName = findViewById(R.id.user_name);
         mUserStatus = findViewById(R.id.user_status);
